@@ -1,0 +1,149 @@
+﻿@model IEnumerable<MedicalRecord>
+@{
+    ViewData["Title"] = "Medical Records";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Medical Records</h1>
+        <a asp-action="Create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-plus fa-sm text-white-50"></i> Add Medical Record
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Medical Records List</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Diagnosis</th>
+                            <th>Visual Acuity</th>
+                            <th>IOP</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var record in Model.OrderByDescending(r => r.CreatedAt))
+                        {
+                            <tr>
+                                <td>@record.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                <td>@record.Patient?.FirstName @record.Patient?.LastName</td>
+                                <td>@record.Doctor?.FirstName @record.Doctor?.LastName</td>
+                                <td>@record.Diagnosis</td>
+                                <td>@record.VisualAcuityLeft / @record.VisualAcuityRight</td>
+                                <td>@record.IntraocularPressureLeft / @record.IntraocularPressureRight mmHg</td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@record.Id" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@record.Id" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add Medical Record Modal -->
+<div class="modal fade" id="addRecordModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Medical Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="Create" method="post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Patient</label>
+                                <select name="PatientId" class="form-control" required>
+                                    <option value="">Select Patient</option>
+                                    @foreach (var patient in ViewBag.Patients ?? new List<Patient>())
+                                    {
+                                        <option value="@patient.Id">@patient.FirstName @patient.LastName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Record Date</label>
+                                <input name="RecordDate" type="date" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Chief Complaint</label>
+                        <textarea name="ChiefComplaint" class="form-control" rows="2" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">History of Present Illness</label>
+                        <textarea name="HistoryOfPresentIllness" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Visual Acuity OD</label>
+                                <input name="VisualAcuityOD" class="form-control" placeholder="20/20" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Visual Acuity OS</label>
+                                <input name="VisualAcuityOS" class="form-control" placeholder="20/20" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">IOP OD (mmHg)</label>
+                                <input name="IntraocularPressureOD" type="number" step="0.1" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">IOP OS (mmHg)</label>
+                                <input name="IntraocularPressureOS" type="number" step="0.1" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Diagnosis</label>
+                        <textarea name="Diagnosis" class="form-control" rows="2" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Treatment Plan</label>
+                        <textarea name="Treatment" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prescription</label>
+                        <textarea name="Prescription" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Next Visit Date</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

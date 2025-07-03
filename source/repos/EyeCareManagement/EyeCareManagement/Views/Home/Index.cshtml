@@ -1,0 +1,268 @@
+﻿@model EyeCareManagement.Controllers.DashboardStatsViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var recentPatients = ViewBag.RecentPatients as List<EyeCareManagement.Models.Patient>;
+    var todayAppointments = ViewBag.TodayAppointments as List<EyeCareManagement.Models.Appointment>;
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h1>
+        <p class="text-muted">Welcome to EyeCare Management System</p>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Patients</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalPatients</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Today's Appointments</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TodayAppointments</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Ward Occupancy</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.ActiveWardAllocations</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-bed fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Optical Orders</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PendingOpticalOrders</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-glasses fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Today's Revenue</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">$@Model.TodayRevenue.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Pending Bills</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PendingBills</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file-invoice fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+    <!-- Recent Patients -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Recent Patients</h6>
+                <a href="@Url.Action("Index", "Patients")" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <div class="card-body">
+                @if (recentPatients != null && recentPatients.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Date Added</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var patient in recentPatients)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Patients", new { id = patient.Id })" class="text-decoration-none">
+                                                @patient.FirstName @patient.LastName
+                                            </a>
+                                        </td>
+                                        <td>@patient.Email</td>
+                                        <td>@patient.PhoneNumber</td>
+                                        <td>@patient.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center">No patients registered yet.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Appointments -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Today's Appointments</h6>
+                <a href="@Url.Action("Index", "Appointments")" class="btn btn-primary btn-sm">View All</a>
+            </div>
+            <div class="card-body">
+                @if (todayAppointments != null && todayAppointments.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var appointment in todayAppointments)
+                                {
+                                    <tr>
+                                        <td>@appointment.AppointmentTime.ToString(@"hh\:mm")</td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Patients", new { id = appointment.PatientId })" class="text-decoration-none">
+                                                @appointment.Patient.FirstName @appointment.Patient.LastName
+                                            </a>
+                                        </td>
+                                        <td>@appointment.Doctor.FirstName @appointment.Doctor.LastName</td>
+                                        <td>
+                                            <span class="badge bg-@(appointment.Status == EyeCareManagement.Models.AppointmentStatus.Scheduled ? "warning" :
+                                                                                                                     appointment.Status == EyeCareManagement.Models.AppointmentStatus.Confirmed ? "success" :
+                                                                                                                     appointment.Status == EyeCareManagement.Models.AppointmentStatus.InProgress ? "info" :
+                                                                                                                     appointment.Status == EyeCareManagement.Models.AppointmentStatus.Completed ? "primary" : "danger")">
+                                        @appointment.Status
+                                    </span>
+                                </td>
+                            </tr>
+                                                        }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center">No appointments scheduled for today.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+@if (User.IsInRole("Doctor") || User.IsInRole("Employee") || User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="@Url.Action("Create", "Patients")" class="btn btn-outline-primary btn-lg w-100">
+                                <i class="fas fa-user-plus fa-2x mb-2"></i>
+                                <br>Add Patient
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="@Url.Action("Create", "Appointments")" class="btn btn-outline-success btn-lg w-100">
+                                <i class="fas fa-calendar-plus fa-2x mb-2"></i>
+                                <br>Schedule Appointment
+                            </a>
+                        </div>
+                        @if (User.IsInRole("Doctor") || User.IsInRole("Admin"))
+                        {
+                            <div class="col-md-3 mb-3">
+                                <a href="@Url.Action("Create", "MedicalRecords")" class="btn btn-outline-info btn-lg w-100">
+                                    <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                                    <br>Add Medical Record
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="@Url.Action("Create", "OpticalOrders")" class="btn btn-outline-warning btn-lg w-100">
+                                    <i class="fas fa-glasses fa-2x mb-2"></i>
+                                    <br>Create Optical Order
+                                </a>
+                            </div>
+                        }
+                        @if (User.IsInRole("Employee") || User.IsInRole("Admin"))
+                        {
+                            <div class="col-md-3 mb-3">
+                                <a href="@Url.Action("Create", "Bills")" class="btn btn-outline-danger btn-lg w-100">
+                                    <i class="fas fa-file-invoice-dollar fa-2x mb-2"></i>
+                                    <br>Generate Bill
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
